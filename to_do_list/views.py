@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, g, request, abort, jsonify
+from flask import render_template, url_for, redirect, g, request, abort, flash
 from to_do_list import app
 from to_do_list.forms import TaskForm
 
@@ -41,11 +41,17 @@ def teardown_request(exception):
 def index():
     form = TaskForm()
     if form.validate_on_submit() and request.form['btn'] == 'Save':
-        g.rdb_conn.table('to_do_list').insert({"name": form.label.data}).run()
+        do = g.rdb_conn.table('to_do_list').insert({"name": form.label.data}).run()
+        if do:
+            flash("添加 {} 成功".format(form.label.data), category="message")
         return redirect(url_for('index'))
-    if form.validate_on_submit() and request.form['btn'] == 'Delete':
+    elif form.validate_on_submit() and request.form['btn'] == 'Delete':
         item = form.label.data
-        g.rdb_conn.table('to_do_list').filter({"name": item}).delete().run()
+        do = g.rdb_conn.table('to_do_list').filter({"name": item}).delete().run()
+        if do['deleted'] == 1:
+            flash("删除 {} 成功".format(form.label.data), category="warning")
+        else:
+            flash("你不能删除一个并不存在的东西", category="warning")
         return redirect(url_for('index'))
     to_do_s = list(g.rdb_conn.table('to_do_list').run())
     return render_template('index.html', form=form, tasks=to_do_s)

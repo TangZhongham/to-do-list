@@ -11,11 +11,14 @@
 于是自己琢磨琢磨给弄好啦。
 
 ## 升级
-* 改进后的例子可以进行增改两个操作
-* 同一页面添加了两个button
+* 改进后的例子可以进行增改两个操作(实现)
+* 添加多日期功能()
+* 改成 mongo 版
 * RethinkDB 还是不要用了，我学学Mongo吧
 
 ## Quick Start
+rethinkdb
+
 pip install -r requirements.txt
 
 python run.py

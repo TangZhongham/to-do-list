@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Todo List</h1>
+<h1>To-do <span class="badge badge-secondary">List</span></h1>
 <p class="lead">With Flask and RethinkDB</p>
 
 <form action="" role="form" method="POST" name="add_task">
 	{{form.hidden_tag()}}
 	<p>
-		<h4>Enter a task</h4>
+		<h4>添加每日任务</h4>
 		{{form.label}}
 		<input type="submit" value="Save" class="btn btn-default btn-md" name="btn">
 		<input type="submit" value="Delete" class="btn btn-default btn-md" name="btn">
@@ -16,9 +16,24 @@
 		{% endfor %}
 	</p>
 </form>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == 'message' %}
+<div class="alert alert-success" role="alert">
+  {{ message }}
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+  {{ message }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
 
 {% for task in tasks %}
-  <li>{{ task.name }}</li>
+  <li>{{ task.name|capitalize }}</li>
 {% endfor %}
 
 {% endblock %}
